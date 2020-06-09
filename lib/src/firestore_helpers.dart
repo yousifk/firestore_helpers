@@ -62,7 +62,7 @@ Query buildQuery(
           isLessThan: constraint.isLessThan,
           isLessThanOrEqualTo: constraint.isLessThanOrEqualTo,
           isNull: constraint.isNull,
-          arrayContainsAny: constraints.arrayContainsAny,
+          arrayContainsAny: constraint.arrayContainsAny,
           arrayContains: constraint.arrayContains);
     }
   }
