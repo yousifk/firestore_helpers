@@ -15,19 +15,19 @@ class QueryConstraint {
   final dynamic isGreaterThanOrEqualTo;
   final bool isNull;
   final dynamic arrayContains;
-  final dynamic arrayContainsAny;
+  List<dynamic> arrayContainsAny;
+  List<dynamic> whereIn;
 
-  QueryConstraint(
-      {this.field,
-      this.isEqualTo,
-      this.isLessThan,
-      this.isLessThanOrEqualTo,
-      this.isGreaterThan,
-      this.isGreaterThanOrEqualTo,
-      this.isNull,
-      this.arrayContains,
-      this.arrayContainsAny,
-      });
+  QueryConstraint({this.field,
+    this.isEqualTo,
+    this.isLessThan,
+    this.isLessThanOrEqualTo,
+    this.isGreaterThan,
+    this.isGreaterThanOrEqualTo,
+    this.isNull,
+    this.arrayContains,
+    this.arrayContainsAny,
+    this.whereIn});
 }
 
 /// Used by [buildQuery] to define how the results should be ordered. The fields
@@ -47,10 +47,10 @@ class OrderConstraint {
 /// [constraints] : a list of constraints that should be applied to the [collection].
 /// [orderBy] : a list of order constraints that should be applied to the [collection] after the filtering by [constraints] was done.
 /// Important all limitation of FireStore apply for this method two on how you can query fields in collections and order them.
-Query buildQuery(
-    {Query collection,
-    List<QueryConstraint> constraints,
-    List<OrderConstraint> orderBy}) {
+Query buildQuery({Query collection,
+  List<QueryConstraint> constraints,
+  List<OrderConstraint> orderBy})
+{
   Query ref = collection;
 
   if (constraints != null) {
@@ -62,6 +62,7 @@ Query buildQuery(
           isLessThan: constraint.isLessThan,
           isLessThanOrEqualTo: constraint.isLessThanOrEqualTo,
           isNull: constraint.isNull,
+          whereIn:constraint.whereIn ,
           arrayContainsAny: constraint.arrayContainsAny,
           arrayContains: constraint.arrayContains);
     }
@@ -93,7 +94,8 @@ Stream<List<T>> getDataFromQuery<T>({
   DocumentMapper<T> mapper,
   List<ItemFilter<T>> clientSidefilters,
   ItemComparer<T> orderComparer,
-}) {
+})
+{
   return query.snapshots().map((snapShot) {
     Iterable<T> items = snapShot.documents.map(mapper);
     if (clientSidefilters != null) {
