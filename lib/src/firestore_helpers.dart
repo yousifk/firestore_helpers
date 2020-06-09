@@ -15,6 +15,7 @@ class QueryConstraint {
   final dynamic isGreaterThanOrEqualTo;
   final bool isNull;
   final dynamic arrayContains;
+  final dynamic arrayContainsAny;
 
   QueryConstraint(
       {this.field,
@@ -24,7 +25,9 @@ class QueryConstraint {
       this.isGreaterThan,
       this.isGreaterThanOrEqualTo,
       this.isNull,
-      this.arrayContains});
+      this.arrayContains,
+      this.arrayContainsAny,
+      });
 }
 
 /// Used by [buildQuery] to define how the results should be ordered. The fields
@@ -59,6 +62,7 @@ Query buildQuery(
           isLessThan: constraint.isLessThan,
           isLessThanOrEqualTo: constraint.isLessThanOrEqualTo,
           isNull: constraint.isNull,
+          arrayContainsAny: constraints.arrayContainsAny,
           arrayContains: constraint.arrayContains);
     }
   }
