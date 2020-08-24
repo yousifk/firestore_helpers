@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -29,6 +30,35 @@ class QueryConstraint {
       this.arrayContains,
       this.arrayContainsAny,
       this.whereIn});
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is QueryConstraint &&
+          runtimeType == other.runtimeType &&
+          field == other.field &&
+          isEqualTo == other.isEqualTo &&
+          isLessThan == other.isLessThan &&
+          isLessThanOrEqualTo == other.isLessThanOrEqualTo &&
+          isGreaterThan == other.isGreaterThan &&
+          isGreaterThanOrEqualTo == other.isGreaterThanOrEqualTo &&
+          isNull == other.isNull &&
+          arrayContains == other.arrayContains &&
+          arrayContainsAny == other.arrayContainsAny &&
+          whereIn == other.whereIn;
+
+  @override
+  int get hashCode =>
+      field.hashCode ^
+      isEqualTo.hashCode ^
+      isLessThan.hashCode ^
+      isLessThanOrEqualTo.hashCode ^
+      isGreaterThan.hashCode ^
+      isGreaterThanOrEqualTo.hashCode ^
+      isNull.hashCode ^
+      arrayContains.hashCode ^
+      arrayContainsAny.hashCode ^
+      whereIn.hashCode;
 }
 
 /// Used by [buildQuery] to define how the results should be ordered. The fields
@@ -52,7 +82,8 @@ Query buildQuery({Query collection, List<QueryConstraint> constraints, List<Orde
   Query ref = collection;
 
   if (constraints != null) {
-    for (var constraint in constraints) {
+    var constraintsSet = HashSet.from(constraints);
+    for (var constraint in constraintsSet) {
       ref = ref.where(constraint.field,
           isEqualTo: constraint.isEqualTo,
           isGreaterThan: constraint.isGreaterThan,
@@ -66,7 +97,8 @@ Query buildQuery({Query collection, List<QueryConstraint> constraints, List<Orde
     }
   }
   if (orderBy != null) {
-    for (var order in orderBy) {
+    var orderBySet = HashSet.from(orderBy);
+    for (var order in orderBySet) {
       ref = ref.orderBy(order.field, descending: order.descending);
     }
   }
