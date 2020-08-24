@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:collection';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -82,7 +81,7 @@ Query buildQuery({Query collection, List<QueryConstraint> constraints, List<Orde
   Query ref = collection;
 
   if (constraints != null) {
-    var constraintsSet = HashSet.from(constraints);
+    Set<QueryConstraint> constraintsSet = constraints.toSet();
     for (var constraint in constraintsSet) {
       ref = ref.where(constraint.field,
           isEqualTo: constraint.isEqualTo,
@@ -97,7 +96,7 @@ Query buildQuery({Query collection, List<QueryConstraint> constraints, List<Orde
     }
   }
   if (orderBy != null) {
-    var orderBySet = HashSet.from(orderBy);
+    Set<OrderConstraint> orderBySet = orderBy.toSet();
     for (var order in orderBySet) {
       ref = ref.orderBy(order.field, descending: order.descending);
     }
